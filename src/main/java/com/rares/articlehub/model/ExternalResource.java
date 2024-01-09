@@ -1,0 +1,63 @@
+package com.rares.articlehub.model;
+
+import jakarta.persistence.*;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+@Entity
+public class ExternalResource {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private int articleIndex;
+    private String urlAsString;
+    @ManyToOne
+    private Article article;
+
+    public ExternalResource() {
+    }
+
+    public ExternalResource(int id, int articleIndex, String urlAsString) {
+        this.id = id;
+        this.articleIndex = articleIndex;
+        this.urlAsString = urlAsString;
+    }
+
+    public ExternalResource(int articleIndex, String urlAsString) {
+        this.articleIndex = articleIndex;
+        this.urlAsString = urlAsString;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getArticleIndex() {
+        return articleIndex;
+    }
+
+    public void setArticleIndex(int articleIndex) {
+        this.articleIndex = articleIndex;
+    }
+
+    public URL getUrl() throws MalformedURLException {
+        return new URL(urlAsString);
+    }
+
+    public void setUrl(URL url) {
+        this.urlAsString = url.toString();
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+}
