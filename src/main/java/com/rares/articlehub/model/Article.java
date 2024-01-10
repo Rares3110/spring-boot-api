@@ -1,7 +1,6 @@
 package com.rares.articlehub.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -11,16 +10,16 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
+    @Column(length = 2000)
     private String content;
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<ExternalResource> externalResources;
     @ManyToMany(mappedBy = "articles")
     private List<Category> categories;
-    @ManyToMany(mappedBy = "followers")
-    private List<Article> following;
-
+    @ManyToMany(mappedBy = "referencedIn")
+    private List<Article> referencing;
     @ManyToMany
-    private List<Article> followers;
+    private List<Article> referencedIn;
 
     public Article() {
     }
@@ -78,19 +77,19 @@ public class Article {
         this.categories = categories;
     }
 
-    public List<Article> getFollowing() {
-        return following;
+    public List<Article> getReferencing() {
+        return referencing;
     }
 
-    public void setFollowing(List<Article> following) {
-        this.following = following;
+    public void setReferencing(List<Article> following) {
+        this.referencing = following;
     }
 
-    public List<Article> getFollowers() {
-        return followers;
+    public List<Article> getReferencedIn() {
+        return referencedIn;
     }
 
-    public void setFollowers(List<Article> followers) {
-        this.followers = followers;
+    public void setReferencedIn(List<Article> followers) {
+        this.referencedIn = followers;
     }
 }

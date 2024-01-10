@@ -1,5 +1,5 @@
 package com.rares.articlehub.model;
 
 public enum CategoryState {
-    InReview, Accepted, Rejected
+    IN_REVIEW, ACCEPTED, REJECTED
 }

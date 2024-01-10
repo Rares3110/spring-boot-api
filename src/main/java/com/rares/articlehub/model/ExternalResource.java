@@ -1,7 +1,6 @@
 package com.rares.articlehub.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
