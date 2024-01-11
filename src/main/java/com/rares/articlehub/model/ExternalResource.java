@@ -1,5 +1,7 @@
 package com.rares.articlehub.model;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,8 +12,10 @@ public class ExternalResource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int articleIndex;
+    @NotNull
     private String urlAsString;
     @ManyToOne
+    @NotNull
     private Article article;
 
     public ExternalResource() {

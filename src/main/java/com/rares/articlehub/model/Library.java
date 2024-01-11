@@ -6,38 +6,37 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Category {
+public class Library {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotNull
     private String title;
+    private String description;
     @Enumerated(EnumType.ORDINAL)
-    private CategoryState state;
-    @ManyToMany
+    private LibraryType type;
+    @ManyToMany(mappedBy = "libraries")
     private List<Article> articles;
+    @ManyToOne
+    @NotNull
+    private User user;
 
-    public Category() {
+    public Library() {
     }
 
-    public Category(int id,
-                    String title,
-                    CategoryState state,
-                    List<Article> articles) {
+    public Library(int id, String title, LibraryType type, List<Article> articles, User user) {
         this.id = id;
         this.title = title;
-        this.state = state;
+        this.type = type;
         this.articles = articles;
+        this.user = user;
     }
 
-    public Category(String title, CategoryState state, List<Article> articles) {
+    public Library(String title, LibraryType type, List<Article> articles, User user) {
         this.title = title;
-        this.state = state;
+        this.type = type;
         this.articles = articles;
-    }
-
-    public Category(String title) {
-        this.title = title;
+        this.user = user;
     }
 
     public int getId() {
@@ -56,12 +55,20 @@ public class Category {
         this.title = title;
     }
 
-    public CategoryState getState() {
-        return state;
+    public String getDescription() {
+        return description;
     }
 
-    public void setState(CategoryState state) {
-        this.state = state;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LibraryType getType() {
+        return type;
+    }
+
+    public void setType(LibraryType type) {
+        this.type = type;
     }
 
     public List<Article> getArticles() {
@@ -70,5 +77,13 @@ public class Category {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

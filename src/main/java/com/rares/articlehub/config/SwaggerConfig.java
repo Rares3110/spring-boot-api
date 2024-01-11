@@ -22,6 +22,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .paths(any())
                 .build();
     }
+
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html")
