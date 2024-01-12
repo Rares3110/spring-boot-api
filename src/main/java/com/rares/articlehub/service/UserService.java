@@ -3,6 +3,8 @@ package com.rares.articlehub.service;
 import com.rares.articlehub.model.User;
 import com.rares.articlehub.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -15,6 +17,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public Page<User> findPage(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
     public Optional<User> findUserById(int id) {
         return userRepository.findById(id);
     }
@@ -25,6 +31,10 @@ public class UserService {
 
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     @Transactional

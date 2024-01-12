@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class ArticleServiceIT {
+public class ArticleServiceTest {
     @InjectMocks
     private ArticleService articleService;
     @Mock
@@ -36,12 +36,12 @@ public class ArticleServiceIT {
 
     @Test
     public void getAllArticlesTest() {
-        assertEquals(articleService.getAllArticles().size(), mockArticles.size());
+        assertEquals(articleService.findAllArticles().size(), mockArticles.size());
     }
 
     @Test
     public void getArticleByIdTest() {
-        Optional<Article> optArticleForSure = articleService.getArticleById(articleRepository.findAll().get(0).getId());
+        Optional<Article> optArticleForSure = articleService.findArticleById(articleRepository.findAll().get(0).getId());
         assertTrue(optArticleForSure.isPresent());
 
         assertEquals(articleRepository.findAll().get(0), optArticleForSure.get());
@@ -50,7 +50,7 @@ public class ArticleServiceIT {
     @Test
     public void getCategoriesForArticleTest() {
         Article articleForSure = articleRepository.findAll().get(0);
-        Optional <Article> optArticleForSure = articleService.getArticleById(articleForSure.getId());
+        Optional <Article> optArticleForSure = articleService.findArticleById(articleForSure.getId());
         assertTrue(optArticleForSure.isPresent());
         assertEquals(articleForSure.getCategories().size(), articleService.getCategoriesForArticle(articleForSure.getId()).size());
     }

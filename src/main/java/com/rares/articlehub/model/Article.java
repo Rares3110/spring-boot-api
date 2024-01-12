@@ -77,6 +77,16 @@ public class Article {
         this.comments = comments;
     }
 
+    public Article(int id,
+                   String title,
+                   String content,
+                   User user) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.user = user;
+    }
+
     public Article(String title,
                    String content,
                    User user) {
