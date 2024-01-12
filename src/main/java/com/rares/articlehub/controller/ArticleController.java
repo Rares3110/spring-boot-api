@@ -21,17 +21,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/article")
 public class ArticleController {
     private final ArticleService articleService;
-    private final CategoryService categoryService;
     private final ArticleMapper articleMapper;
     private final CategoryMapper categoryMapper;
 
     public ArticleController(
             ArticleService articleService,
-            CategoryService categoryService,
             ArticleMapper articleMapper,
             CategoryMapper categoryMapper) {
         this.articleService = articleService;
-        this.categoryService = categoryService;
         this.articleMapper = articleMapper;
         this.categoryMapper = categoryMapper;
     }

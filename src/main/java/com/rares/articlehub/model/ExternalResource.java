@@ -21,15 +21,17 @@ public class ExternalResource {
     public ExternalResource() {
     }
 
-    public ExternalResource(int id, int articleIndex, String urlAsString) {
+    public ExternalResource(int id, int articleIndex, String urlAsString, Article article) {
         this.id = id;
         this.articleIndex = articleIndex;
         this.urlAsString = urlAsString;
+        this.article = article;
     }
 
-    public ExternalResource(int articleIndex, String urlAsString) {
+    public ExternalResource(int articleIndex, String urlAsString, Article article) {
         this.articleIndex = articleIndex;
         this.urlAsString = urlAsString;
+        this.article = article;
     }
 
     public int getId() {

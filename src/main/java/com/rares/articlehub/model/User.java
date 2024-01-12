@@ -4,6 +4,8 @@ import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -12,12 +14,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotNull
+    @Size(min = 4, max = 20)
     private String username;
     @NotNull
     @Column(unique = true)
     @Email
     private String email;
     @NotNull
+    @Size(min = 8)
     private String password;
     @Enumerated(EnumType.ORDINAL)
     private UserRole userRole;
