@@ -36,6 +36,17 @@ public class Category {
         this.articles = articles;
     }
 
+    public Category(int id, String title, CategoryState state) {
+        this.id = id;
+        this.title = title;
+        this.state = state;
+    }
+
+    public Category(String title, CategoryState state) {
+        this.title = title;
+        this.state = state;
+    }
+
     public Category(String title) {
         this.title = title;
     }
