@@ -1,7 +1,8 @@
 package com.rares.articlehub.controller;
 
-import com.rares.articlehub.dto.UserRequest;
-import com.rares.articlehub.dto.UserResponse;
+import com.rares.articlehub.dto.*;
+import com.rares.articlehub.mapper.ArticleMapper;
+import com.rares.articlehub.mapper.CommentMapper;
 import com.rares.articlehub.mapper.UserMapper;
 import com.rares.articlehub.model.User;
 import com.rares.articlehub.service.UserService;
@@ -18,16 +19,25 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+
     private final UserMapper userMapper;
 
+    private final ArticleMapper articleMapper;
+
+    private final CommentMapper commentMapper;
+
     public UserController(UserService userService,
-                          UserMapper userMapper) {
+                          UserMapper userMapper,
+                          ArticleMapper articleMapper,
+                          CommentMapper commentMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
+        this.articleMapper = articleMapper;
+        this.commentMapper = commentMapper;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getStudentByEmail(@PathVariable int id) {
+    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable int id) {
         Optional<User> userOptional = userService.findUserById(id);
 
         return userOptional.map(user -> ResponseEntity.ok().body(userMapper.convertUserToResponse(user)))
@@ -35,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<UserResponse> getStudentByEmail(@PathVariable String email) {
+    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable String email) {
         Optional<User> userOptional = userService.findUserByEmail(email);
 
         return userOptional.map(user -> ResponseEntity.ok().body(userMapper.convertUserToResponse(user)))
@@ -51,6 +61,36 @@ public class UserController {
                         .getContent()
                         .stream()
                         .map(userMapper::convertUserToResponse)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/{id}/articles")
+    public ResponseEntity<List<ArticleHeaderResponse>> getAllArticleHeadersOfUser(@PathVariable int id) {
+        Optional<User> userOptional = userService.findUserById(id);
+
+        if(userOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok().body(
+                userService.getAllArticlesByUser(id)
+                        .stream()
+                        .map(articleMapper::convertArticleToHeaderResponse)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentResponse>> getAllCommentsHeadersOfUser(@PathVariable int id) {
+        Optional<User> userOptional = userService.findUserById(id);
+
+        if(userOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok().body(
+                userService.getAllCommentsByUser(id)
+                        .stream()
+                        .map(commentMapper::convertCommentToResponse)
                         .collect(Collectors.toList())
         );
     }
