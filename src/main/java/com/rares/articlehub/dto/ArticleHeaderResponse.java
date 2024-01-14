@@ -4,9 +4,7 @@ import com.sun.istack.NotNull;
 
 public class ArticleHeaderResponse {
     private int id;
-    @NotNull
     private String title;
-    @NotNull
     private String username;
 
     public ArticleHeaderResponse(int id, String title, String username) {

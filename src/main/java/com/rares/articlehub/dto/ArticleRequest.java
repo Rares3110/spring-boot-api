@@ -7,10 +7,7 @@ import javax.persistence.Column;
 import java.util.List;
 
 public class ArticleRequest {
-    @NotNull
     private String title;
-    @Column(length = 2000)
-    @NotNull
     private String content;
     private int userId;
 

@@ -17,10 +17,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Page<User> findPage(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
-
     public Optional<User> findUserById(int id) {
         return userRepository.findById(id);
     }
@@ -29,12 +25,12 @@ public class UserService {
         return userRepository.findUserByEmail(email);
     }
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public Page<User> findPage(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
-    public void deleteUser(User user) {
-        userRepository.delete(user);
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -45,5 +41,9 @@ public class UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
+    }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 }

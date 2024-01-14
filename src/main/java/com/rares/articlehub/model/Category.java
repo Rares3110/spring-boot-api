@@ -11,6 +11,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotNull
+    @Column(unique = true)
     private String title;
     @Enumerated(EnumType.ORDINAL)
     private CategoryState state;

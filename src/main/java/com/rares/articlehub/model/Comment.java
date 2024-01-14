@@ -12,6 +12,8 @@ public class Comment {
     private int id;
     @NotNull
     private String content;
+    @Enumerated(EnumType.ORDINAL)
+    private CommentVisibility visibility;
     @ManyToOne
     @NotNull
     private User user;
@@ -25,21 +27,31 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(int id, String content, User user, Article article, Comment comment, List<Comment> receivedComments) {
+    public Comment(int id, String content, CommentVisibility visibility, User user, Article article, Comment comment, List<Comment> receivedComments) {
         this.id = id;
         this.content = content;
+        this.visibility = visibility;
         this.user = user;
         this.article = article;
         this.comment = comment;
         this.receivedComments = receivedComments;
     }
 
-    public Comment(String content, User user, Article article, Comment comment, List<Comment> receivedComments) {
+    public Comment(String content, CommentVisibility visibility, User user, Article article, Comment comment, List<Comment> receivedComments) {
         this.content = content;
+        this.visibility = visibility;
         this.user = user;
         this.article = article;
         this.comment = comment;
         this.receivedComments = receivedComments;
+    }
+
+    public Comment(String content, CommentVisibility visibility, User user, Article article, Comment comment) {
+        this.content = content;
+        this.visibility = visibility;
+        this.user = user;
+        this.article = article;
+        this.comment = comment;
     }
 
     public int getId() {
@@ -60,6 +72,14 @@ public class Comment {
 
     public User getUser() {
         return user;
+    }
+
+    public CommentVisibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(CommentVisibility visibility) {
+        this.visibility = visibility;
     }
 
     public void setUser(User user) {

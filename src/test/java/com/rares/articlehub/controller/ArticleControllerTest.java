@@ -56,70 +56,23 @@ public class ArticleControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void saveArticleTest() throws Exception {
-        User mockUser = new User(
-                1,
-                "Test@yahoo.ro",
-                "Test",
-                "TestTest@!12",
-                UserRole.USER
-        );
-        Article mockArticle = new Article(
-                1,
-                "Title",
-                "Content",
-                mockUser
-        );
-
-        ArticleRequest articleRequest = new ArticleRequest(mockArticle.getTitle(), mockArticle.getContent(), mockUser.getId());
-        ArticleResponse articleResponse = new ArticleResponse(mockArticle.getId(), mockArticle.getTitle(), mockArticle.getContent(), mockUser.getId());
-
-        when(userService.findUserById(ArgumentMatchers.anyInt())).thenReturn(Optional.of(mockUser));
-        when(articleMapper.convertRequestToArticle(articleRequest, mockUser)).thenReturn(mockArticle);
-        when(articleService.saveArticle(mockArticle)).thenReturn(mockArticle);
-        when(articleMapper.convertArticleToResponse(mockArticle)).thenReturn(articleResponse);
-
-        mockMvc.perform(post("/article/new")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(articleRequest))
-                )
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void updateArticleTest() throws Exception {
-        Article mockArticle = new Article(1, "Old Title", "Old Content", new User());
-        String updatedTitle = "New Title";
-        String updatedContent = "New Content";
-        Article updatedArticle = new Article(1, updatedTitle, updatedContent, mockArticle.getUser());
-
-        ArticleResponse updatedArticleResponse = new ArticleResponse(
-                updatedArticle.getId(), updatedArticle.getTitle(), updatedArticle.getContent(), updatedArticle.getUser().getId()
-        );
-
-        when(articleService.findArticleById(1)).thenReturn(Optional.of(mockArticle));
-        when(articleService.updateArticle(1, updatedTitle, updatedContent)).thenReturn(updatedArticle);
-        when(articleMapper.convertArticleToResponse(updatedArticle)).thenReturn(updatedArticleResponse);
-
-        mockMvc.perform(put("/article/1")
-                        .param("title", updatedTitle)
-                        .param("content", updatedContent))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(updatedArticle.getId()))
-                .andExpect(jsonPath("$.title").value(updatedArticle.getTitle()))
-                .andExpect(jsonPath("$.content").value(updatedArticle.getContent()))
-                .andExpect(jsonPath("$.userId").value(updatedArticle.getUser().getId()));
-    }
-
-    @Test
-    public void deleteArticleTest() throws Exception {
+    public void getArticleByIdTest() throws Exception {
         int articleId = 1;
 
-        // Mock service calls
-        when(articleService.findArticleById(articleId)).thenReturn(Optional.of(new Article()));
+        Article mockArticle = new Article();
+        mockArticle.setId(articleId);
+        ArticleResponse mockArticleResponse = new ArticleResponse(articleId, "Mock Title", "Mock Content", 1);
 
-        mockMvc.perform(delete("/article/" + articleId))
-                .andExpect(status().isOk());
+        when(articleService.findArticleById(articleId)).thenReturn(Optional.of(mockArticle));
+        when(articleMapper.convertArticleToResponse(mockArticle)).thenReturn(mockArticleResponse);
+
+        mockMvc.perform(get("/article/{id}", articleId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(mockArticleResponse.getId()))
+                .andExpect(jsonPath("$.title").value(mockArticleResponse.getTitle()))
+                .andExpect(jsonPath("$.content").value(mockArticleResponse.getContent()))
+                .andExpect(jsonPath("$.userId").value(mockArticleResponse.getUserId()));
     }
 
     @Test
@@ -208,22 +161,69 @@ public class ArticleControllerTest {
     }
 
     @Test
-    public void getArticleByIdTest() throws Exception {
+    public void saveArticleTest() throws Exception {
+        User mockUser = new User(
+                1,
+                "Test@yahoo.ro",
+                "Test",
+                "TestTest@!12",
+                UserRole.USER
+        );
+        Article mockArticle = new Article(
+                1,
+                "Title",
+                "Content",
+                mockUser
+        );
+
+        ArticleRequest articleRequest = new ArticleRequest(mockArticle.getTitle(), mockArticle.getContent(), mockUser.getId());
+        ArticleResponse articleResponse = new ArticleResponse(mockArticle.getId(), mockArticle.getTitle(), mockArticle.getContent(), mockUser.getId());
+
+        when(userService.findUserById(ArgumentMatchers.anyInt())).thenReturn(Optional.of(mockUser));
+        when(articleMapper.convertRequestToArticle(articleRequest, mockUser)).thenReturn(mockArticle);
+        when(articleService.saveArticle(mockArticle)).thenReturn(mockArticle);
+        when(articleMapper.convertArticleToResponse(mockArticle)).thenReturn(articleResponse);
+
+        mockMvc.perform(post("/article/new")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(articleRequest))
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateArticleTest() throws Exception {
+        Article mockArticle = new Article(1, "Old Title", "Old Content", new User());
+        String updatedTitle = "New Title";
+        String updatedContent = "New Content";
+        Article updatedArticle = new Article(1, updatedTitle, updatedContent, mockArticle.getUser());
+
+        ArticleResponse updatedArticleResponse = new ArticleResponse(
+                updatedArticle.getId(), updatedArticle.getTitle(), updatedArticle.getContent(), updatedArticle.getUser().getId()
+        );
+
+        when(articleService.findArticleById(1)).thenReturn(Optional.of(mockArticle));
+        when(articleService.updateArticle(1, updatedTitle, updatedContent)).thenReturn(updatedArticle);
+        when(articleMapper.convertArticleToResponse(updatedArticle)).thenReturn(updatedArticleResponse);
+
+        mockMvc.perform(put("/article/1")
+                        .param("title", updatedTitle)
+                        .param("content", updatedContent))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(updatedArticle.getId()))
+                .andExpect(jsonPath("$.title").value(updatedArticle.getTitle()))
+                .andExpect(jsonPath("$.content").value(updatedArticle.getContent()))
+                .andExpect(jsonPath("$.userId").value(updatedArticle.getUser().getId()));
+    }
+
+    @Test
+    public void deleteArticleTest() throws Exception {
         int articleId = 1;
 
-        Article mockArticle = new Article();
-        mockArticle.setId(articleId);
-        ArticleResponse mockArticleResponse = new ArticleResponse(articleId, "Mock Title", "Mock Content", 1);
+        // Mock service calls
+        when(articleService.findArticleById(articleId)).thenReturn(Optional.of(new Article()));
 
-        when(articleService.findArticleById(articleId)).thenReturn(Optional.of(mockArticle));
-        when(articleMapper.convertArticleToResponse(mockArticle)).thenReturn(mockArticleResponse);
-
-        mockMvc.perform(get("/article/{id}", articleId))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(mockArticleResponse.getId()))
-                .andExpect(jsonPath("$.title").value(mockArticleResponse.getTitle()))
-                .andExpect(jsonPath("$.content").value(mockArticleResponse.getContent()))
-                .andExpect(jsonPath("$.userId").value(mockArticleResponse.getUserId()));
+        mockMvc.perform(delete("/article/" + articleId))
+                .andExpect(status().isOk());
     }
 }

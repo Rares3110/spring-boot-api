@@ -2,6 +2,8 @@ package com.rares.articlehub.service;
 
 import com.rares.articlehub.model.Article;
 import com.rares.articlehub.model.Category;
+import com.rares.articlehub.model.Comment;
+import com.rares.articlehub.model.ExternalResource;
 import com.rares.articlehub.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,10 @@ public class ArticleService {
         return articleRepository.findById(id);
     }
 
+    public Page<Article> findPage(Pageable pageable) {
+        return articleRepository.findAll(pageable);
+    }
+
     @Transactional
     public List<Category> getCategoriesForArticle(int id) {
         Article article = articleRepository.findById(id).orElse(null);
@@ -38,8 +44,24 @@ public class ArticleService {
         return Collections.emptyList();
     }
 
-    public Page<Article> findPage(Pageable pageable) {
-        return articleRepository.findAll(pageable);
+    @Transactional
+    public List<Comment> getCommentsForArticle(int id) {
+        Article article = articleRepository.findById(id).orElse(null);
+
+        if (article != null)
+            return new ArrayList<>(article.getComments());
+
+        return Collections.emptyList();
+    }
+
+    @Transactional
+    public List<ExternalResource> getExternalResourcesForArticle(int id) {
+        Article article = articleRepository.findById(id).orElse(null);
+
+        if (article != null)
+            return new ArrayList<>(article.getExternalResources());
+
+        return Collections.emptyList();
     }
 
     public Article saveArticle(Article article) {

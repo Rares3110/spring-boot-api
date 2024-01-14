@@ -56,14 +56,6 @@ public class ArticleServiceTest {
     }
 
     @Test
-    public void getCategoriesForArticleTest() {
-        Article articleForSure = articleRepository.findAll().get(0);
-        Optional <Article> optArticleForSure = articleService.findArticleById(articleForSure.getId());
-        assertTrue(optArticleForSure.isPresent());
-        assertEquals(articleForSure.getCategories().size(), articleService.getCategoriesForArticle(articleForSure.getId()).size());
-    }
-
-    @Test
     void findPageTest() {
         Pageable pageable = PageRequest.of(0, 10);
         when(articleRepository.findAll(pageable)).thenReturn(new PageImpl<>(mockArticles));
@@ -72,6 +64,14 @@ public class ArticleServiceTest {
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
+    }
+
+    @Test
+    public void getCategoriesForArticleTest() {
+        Article articleForSure = articleRepository.findAll().get(0);
+        Optional <Article> optArticleForSure = articleService.findArticleById(articleForSure.getId());
+        assertTrue(optArticleForSure.isPresent());
+        assertEquals(articleForSure.getCategories().size(), articleService.getCategoriesForArticle(articleForSure.getId()).size());
     }
 
     @Test
