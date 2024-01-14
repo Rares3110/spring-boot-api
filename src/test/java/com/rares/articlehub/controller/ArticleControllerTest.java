@@ -1,15 +1,15 @@
 package com.rares.articlehub.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rares.articlehub.dto.ArticleHeaderResponse;
-import com.rares.articlehub.dto.ArticleRequest;
-import com.rares.articlehub.dto.ArticleResponse;
-import com.rares.articlehub.dto.CategoryResponse;
+import com.rares.articlehub.dto.*;
 import com.rares.articlehub.mapper.ArticleMapper;
 import com.rares.articlehub.mapper.CategoryMapper;
+import com.rares.articlehub.mapper.CommentMapper;
+import com.rares.articlehub.mapper.ExternalResourceMapper;
 import com.rares.articlehub.model.*;
 import com.rares.articlehub.service.ArticleService;
 import com.rares.articlehub.service.CategoryService;
+import com.rares.articlehub.service.CommentService;
 import com.rares.articlehub.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -44,10 +44,22 @@ public class ArticleControllerTest {
     private CategoryService categoryService;
 
     @MockBean
+    private CommentService commentService;
+
+    @MockBean
+    private ExternalResource externalResource;
+
+    @MockBean
     private ArticleMapper articleMapper;
 
     @MockBean
     private CategoryMapper categoryMapper;
+
+    @MockBean
+    private CommentMapper commentMapper;
+
+    @MockBean
+    private ExternalResourceMapper externalResourceMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -161,6 +173,97 @@ public class ArticleControllerTest {
     }
 
     @Test
+    public void getArticleExternalResourcesTest() throws Exception {
+        int articleId = 1;
+
+        Article mockArticle = new Article();
+        mockArticle.setId(articleId);
+
+        List<ExternalResource> mockExternalResources = Arrays.asList(
+                new ExternalResource(1, 1, "http://localhost:8080/v2/api-docs", mockArticle),
+                new ExternalResource(2, 2, "http://localhost:8080/v2/api-docs", mockArticle)
+        );
+
+        List<ExternalResourceResponse> mockExternalResourceResponses = Arrays.asList(
+                new ExternalResourceResponse(
+                        mockExternalResources.get(0).getId(),
+                        mockExternalResources.get(0).getArticleIndex(),
+                        mockExternalResources.get(0).getUrl(),
+                        mockExternalResources.get(0).getArticle().getId()
+                ),
+                new ExternalResourceResponse(
+                        mockExternalResources.get(1).getId(),
+                        mockExternalResources.get(1).getArticleIndex(),
+                        mockExternalResources.get(1).getUrl(),
+                        mockExternalResources.get(1).getArticle().getId()
+                )
+        );
+
+        when(articleService.findArticleById(articleId)).thenReturn(Optional.of(mockArticle));
+        when(articleService.getExternalResourcesForArticle(articleId)).thenReturn(mockExternalResources);
+        when(externalResourceMapper.convertExternalResourceToResponse(any(ExternalResource.class)))
+                .thenAnswer(invocation -> {
+                    ExternalResource externalResource = invocation.getArgument(0);
+                    return new ExternalResourceResponse(externalResource.getId(),
+                            externalResource.getArticleIndex(),
+                            externalResource.getUrl(),
+                            externalResource.getArticle().getId());
+                });
+
+        mockMvc.perform(get("/article/{id}/external-resources", articleId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(mockExternalResources.size())))
+                .andExpect(jsonPath("$[0].id").value(mockExternalResourceResponses.get(0).getId()))
+                .andExpect(jsonPath("$[0].articleIndex").value(mockExternalResourceResponses.get(0).getArticleIndex()))
+                .andExpect(jsonPath("$[0].articleId").value(mockExternalResourceResponses.get(0).getArticleId()))
+                .andExpect(jsonPath("$[1].id").value(mockExternalResourceResponses.get(1).getId()))
+                .andExpect(jsonPath("$[1].articleIndex").value(mockExternalResourceResponses.get(1).getArticleIndex()))
+                .andExpect(jsonPath("$[1].articleId").value(mockExternalResourceResponses.get(1).getArticleId()));
+    }
+
+    @Test
+    public void getArticleCommentsTest() throws Exception {
+        int articleId = 1;
+
+        Article mockArticle = new Article();
+        mockArticle.setId(articleId);
+        User mockUser = new User();
+        mockUser.setId(1);
+
+        List<Comment> mockComments = Arrays.asList(
+                new Comment(1, "Comment1", CommentVisibility.VISIBLE, mockUser, mockArticle, null),
+                new Comment(2, "Comment2", CommentVisibility.VISIBLE, mockUser, mockArticle, null)
+        );
+
+        List<CommentResponse> mockCommentResponses = Arrays.asList(
+                new CommentResponse(
+                        mockComments.get(0).getId(),
+                        mockComments.get(0).getContent()),
+                new CommentResponse(
+                        mockComments.get(1).getId(),
+                        mockComments.get(1).getContent())
+        );
+
+        when(articleService.findArticleById(articleId)).thenReturn(Optional.of(mockArticle));
+        when(articleService.getCommentsForArticle(articleId)).thenReturn(mockComments);
+        when(commentMapper.convertCommentToResponse(any(Comment.class)))
+                .thenAnswer(invocation -> {
+                    Comment comment = invocation.getArgument(0);
+                    return new CommentResponse(comment.getId(), comment.getContent());
+                });
+
+        mockMvc.perform(get("/article/{id}/comments", articleId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(mockComments.size())))
+                .andExpect(jsonPath("$[0].id").value(mockCommentResponses.get(0).getId()))
+                .andExpect(jsonPath("$[0].content").value(mockCommentResponses.get(0).getContent()))
+                .andExpect(jsonPath("$[1].id").value(mockCommentResponses.get(1).getId()))
+                .andExpect(jsonPath("$[1].content").value(mockCommentResponses.get(1).getContent()));
+    }
+
+    @Test
     public void saveArticleTest() throws Exception {
         User mockUser = new User(
                 1,
@@ -208,7 +311,7 @@ public class ArticleControllerTest {
 
         mockMvc.perform(put("/article/1")
                         .param("title", updatedTitle)
-                        .param("content", updatedContent))
+                        .content(updatedContent))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(updatedArticle.getId()))
                 .andExpect(jsonPath("$.title").value(updatedArticle.getTitle()))

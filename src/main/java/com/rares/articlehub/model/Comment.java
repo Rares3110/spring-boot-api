@@ -46,6 +46,15 @@ public class Comment {
         this.receivedComments = receivedComments;
     }
 
+    public Comment(int id, String content, CommentVisibility visibility, User user, Article article, Comment comment){
+        this.id = id;
+        this.content = content;
+        this.visibility = visibility;
+        this.user = user;
+        this.article = article;
+        this.comment = comment;
+    }
+
     public Comment(String content, CommentVisibility visibility, User user, Article article, Comment comment) {
         this.content = content;
         this.visibility = visibility;

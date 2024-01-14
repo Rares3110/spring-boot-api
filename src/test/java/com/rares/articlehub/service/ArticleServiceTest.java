@@ -32,8 +32,30 @@ public class ArticleServiceTest {
     @BeforeEach
     public void setUp() {
         mockArticles = Arrays.asList(
-                new Article(1, " ", " ", null, List.of(new Category(), new Category()), null, null, null, null, null),
-                new Article(2, " ", " ", null, null, null, null, null, null, null)
+                new Article(
+                        1,
+                        " ",
+                        " ",
+                        List.of(new ExternalResource(), new ExternalResource()),
+                        List.of(new Category(), new Category()),
+                        null,
+                        null,
+                        null,
+                        null,
+                        List.of(new Comment(), new Comment())
+                ),
+                new Article(
+                        2,
+                        " ",
+                        " ",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                )
         );
         when(articleRepository.save(mockArticles.get(0))).thenReturn(mockArticles.get(0));
         when(articleRepository.save(mockArticles.get(1))).thenReturn(mockArticles.get(1));
@@ -72,6 +94,22 @@ public class ArticleServiceTest {
         Optional <Article> optArticleForSure = articleService.findArticleById(articleForSure.getId());
         assertTrue(optArticleForSure.isPresent());
         assertEquals(articleForSure.getCategories().size(), articleService.getCategoriesForArticle(articleForSure.getId()).size());
+    }
+
+    @Test
+    public void getCommentsForArticleTest() {
+        Article articleForSure = articleRepository.findAll().get(0);
+        Optional <Article> optArticleForSure = articleService.findArticleById(articleForSure.getId());
+        assertTrue(optArticleForSure.isPresent());
+        assertEquals(articleForSure.getComments().size(), articleService.getCommentsForArticle(articleForSure.getId()).size());
+    }
+
+    @Test
+    public void getExternalResourcesForArticleTest() {
+        Article articleForSure = articleRepository.findAll().get(0);
+        Optional <Article> optArticleForSure = articleService.findArticleById(articleForSure.getId());
+        assertTrue(optArticleForSure.isPresent());
+        assertEquals(articleForSure.getExternalResources().size(), articleService.getExternalResourcesForArticle(articleForSure.getId()).size());
     }
 
     @Test
