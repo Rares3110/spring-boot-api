@@ -97,7 +97,7 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}/external-resources")
-    public ResponseEntity<List<ExternalResourceResponse>> getExternalResources(@PathVariable int id) {
+    public ResponseEntity<List<ExternalResourceResponse>> getArticleExternalResources(@PathVariable int id) {
         Optional<Article> articleOptional = articleService.findArticleById(id);
 
         return articleOptional

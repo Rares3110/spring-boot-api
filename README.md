@@ -14,6 +14,7 @@ with a commenting system
 * Storing the articles and comments made by a person in his account
 
 For more details check the **Documentation.pdf** file.
+For postman request examples check **ArticleHub.postman_collection.json** file.
 
 ### Things to expect in future versions
 * Library system for storing articles by preferences

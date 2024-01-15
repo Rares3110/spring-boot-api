@@ -1,9 +1,7 @@
 package com.rares.articlehub.seed;
 
 import com.rares.articlehub.model.*;
-import com.rares.articlehub.repository.ArticleRepository;
-import com.rares.articlehub.repository.CategoryRepository;
-import com.rares.articlehub.repository.UserRepository;
+import com.rares.articlehub.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -15,20 +13,28 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CategoryRepository categoryRepository;
+    private final ExternalResourceRepository externalResourceRepository;
+    private final CommentRepository commentRepository;
 
     public DatabaseSeeder(UserRepository userRepository,
                           ArticleRepository articleRepository,
-                          CategoryRepository categoryRepository) {
+                          CategoryRepository categoryRepository,
+                          ExternalResourceRepository externalResourceRepository,
+                          CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
+        this.externalResourceRepository = externalResourceRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
     public void run(String... args) {
         if(userRepository.count() != 0
                 || articleRepository.count() != 0
-                || categoryRepository.count() != 0) {
+                || categoryRepository.count() != 0
+                || externalResourceRepository.count() != 0
+                || commentRepository.count() != 0) {
             return;
         }
 
@@ -93,8 +99,156 @@ public class DatabaseSeeder implements CommandLineRunner {
                 )
         );
 
+        List<ExternalResource> externalResourceList = List.of(
+                new ExternalResource(
+                    1,
+                    "http://localhost:8080/random1",
+                    articleList.get(0)
+                ),
+                new ExternalResource(
+                        2,
+                        "http://localhost:8080/random2",
+                        articleList.get(0)
+                ),
+                new ExternalResource(
+                        3,
+                        "http://localhost:8080/random3",
+                        articleList.get(0)
+                ),
+                new ExternalResource(
+                        1,
+                        "http://localhost:8080/random4",
+                        articleList.get(1)
+                ),
+                new ExternalResource(
+                        2,
+                        "http://localhost:8080/random5",
+                        articleList.get(1)
+                ),
+                new ExternalResource(
+                        1,
+                        "http://localhost:8080/random6",
+                        articleList.get(2)
+                ),
+                new ExternalResource(
+                        2,
+                        "http://localhost:8080/random7",
+                        articleList.get(2)
+                ),
+                new ExternalResource(
+                        3,
+                        "http://localhost:8080/random8",
+                        articleList.get(2)
+                ),
+                new ExternalResource(
+                        4,
+                        "http://localhost:8080/random9",
+                        articleList.get(2)
+                )
+        );
+
+        List<Comment> commentToArticleList = List.of(
+                new Comment(
+                        "comment to article 1",
+                        CommentVisibility.VISIBLE,
+                        userList.get(1),
+                        articleList.get(0),
+                        null
+                ),
+                new Comment(
+                        "comment to article 2",
+                        CommentVisibility.VISIBLE,
+                        userList.get(1),
+                        articleList.get(0),
+                        null
+                ),
+                new Comment(
+                        "comment to article 3",
+                        CommentVisibility.VISIBLE,
+                        userList.get(1),
+                        articleList.get(1),
+                        null
+                ),
+                new Comment(
+                        "comment to article 4",
+                        CommentVisibility.VISIBLE,
+                        userList.get(0),
+                        articleList.get(1),
+                        null
+                ),
+                new Comment(
+                        "comment to article 5",
+                        CommentVisibility.VISIBLE,
+                        userList.get(1),
+                        articleList.get(1),
+                        null
+                ),
+                new Comment(
+                        "comment to article 6",
+                        CommentVisibility.VISIBLE,
+                        userList.get(0),
+                        articleList.get(2),
+                        null
+                ),
+                new Comment(
+                        "comment to article 7",
+                        CommentVisibility.VISIBLE,
+                        userList.get(1),
+                        articleList.get(2),
+                        null
+                )
+        );
+
+        List<Comment> commentToCommentList = List.of(
+                new Comment(
+                        "comment to comment 1",
+                        CommentVisibility.VISIBLE,
+                        userList.get(0),
+                        null,
+                        commentToArticleList.get(0)
+                ),
+                new Comment(
+                        "comment to comment 2",
+                        CommentVisibility.VISIBLE,
+                        userList.get(0),
+                        null,
+                        commentToArticleList.get(0)
+                ),
+                new Comment(
+                        "comment to comment 3",
+                        CommentVisibility.VISIBLE,
+                        userList.get(0),
+                        null,
+                        commentToArticleList.get(0)
+                ),
+                new Comment(
+                        "comment to comment 4",
+                        CommentVisibility.VISIBLE,
+                        userList.get(1),
+                        null,
+                        commentToArticleList.get(2)
+                ),
+                new Comment(
+                        "comment to comment 5",
+                        CommentVisibility.VISIBLE,
+                        userList.get(0),
+                        null,
+                        commentToArticleList.get(3)
+                ),
+                new Comment(
+                        "comment to comment 6",
+                        CommentVisibility.VISIBLE,
+                        userList.get(1),
+                        null,
+                        commentToArticleList.get(3)
+                )
+        );
+
         userRepository.saveAll(userList);
         articleRepository.saveAll(articleList);
         categoryRepository.saveAll(categoryList);
+        externalResourceRepository.saveAll(externalResourceList);
+        commentRepository.saveAll(commentToArticleList);
+        commentRepository.saveAll(commentToCommentList);
     }
 }

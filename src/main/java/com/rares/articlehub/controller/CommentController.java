@@ -104,7 +104,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}/update-visibility")
-    public ResponseEntity<CommentResponse> updateCommentContent(@PathVariable int id, @RequestBody CommentVisibility visibility) {
+    public ResponseEntity<CommentResponse> updateCommentVisibility(@PathVariable int id, @RequestBody CommentVisibility visibility) {
         Optional<Comment> commentOptional = commentService.findCommentById(id);
 
         if(commentOptional.isEmpty())

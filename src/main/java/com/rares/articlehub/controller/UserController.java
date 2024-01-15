@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable int id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable int id) {
         Optional<User> userOptional = userService.findUserById(id);
 
         return userOptional.map(user -> ResponseEntity.ok().body(userMapper.convertUserToResponse(user)))
@@ -81,7 +81,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentResponse>> getAllCommentsHeadersOfUser(@PathVariable int id) {
+    public ResponseEntity<List<CommentResponse>> getAllCommentHeadersOfUser(@PathVariable int id) {
         Optional<User> userOptional = userService.findUserById(id);
 
         if(userOptional.isEmpty())
