@@ -13,7 +13,7 @@ The main functionalities are:
 with a commenting system
 * Storing the articles and comments made by a person in his account
 
-For more details check the **Documentation.pdf** file.
+For more details check the **Documentation.pdf** file. <br/>
 For postman request examples check **ArticleHub.postman_collection.json** file.
 
 ### Things to expect in future versions
